@@ -1,0 +1,30 @@
+# Git security preset for agent-redline
+name = "git"
+description = "Strict git protections against force-pushing, history rewriting, and destructive repository cleaning"
+
+mode = "balanced"
+fail_mode = "ask"
+
+trusted_domains = [
+    "github.com",
+    "gitlab.com",
+    "bitbucket.org"
+]
+
+allow_commands = [
+    "git status",
+    "git log",
+    "git diff",
+    "git add",
+    "git commit",
+    "git pull",
+    "git fetch",
+    "git branch"
+]
+
+deny_commands = [
+    "git clean -fdx",
+    "git reset --hard",
+    "git push --force origin main",
+    "git push --force origin master"
+]

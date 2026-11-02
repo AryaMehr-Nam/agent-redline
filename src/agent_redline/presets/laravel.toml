@@ -1,0 +1,51 @@
+# Laravel security preset for agent-redline
+name = "laravel"
+description = "Safeguards Laravel applications from artisan database wipes, tinker mutations, and storage deletions"
+
+mode = "balanced"
+fail_mode = "ask"
+
+trusted_domains = [
+    "packagist.org",
+    "repo.packagist.org",
+    "laravel.com",
+    "github.com",
+    "raw.githubusercontent.com"
+]
+
+allow_globs = [
+    "storage/framework/cache/**",
+    "storage/framework/sessions/**",
+    "storage/framework/views/**",
+    "storage/logs/**",
+    "bootstrap/cache/**",
+    "vendor/**",
+    "public/build/**"
+]
+
+deny_globs = [
+    ".env",
+    ".env.production",
+    "storage/oauth-*.key",
+    "database/database.sqlite"
+]
+
+allow_commands = [
+    "php artisan migrate",
+    "php artisan migrate:status",
+    "php artisan route:list",
+    "php artisan config:clear",
+    "php artisan cache:clear",
+    "php artisan view:clear",
+    "php artisan optimize:clear",
+    "php artisan test",
+    "vendor/bin/phpunit",
+    "composer test"
+]
+
+deny_commands = [
+    "php artisan migrate:fresh",
+    "php artisan db:wipe",
+    "artisan migrate:fresh",
+    "artisan db:wipe"
+]

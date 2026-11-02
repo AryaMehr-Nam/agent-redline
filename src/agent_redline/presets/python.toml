@@ -1,0 +1,41 @@
+# Python security preset for agent-redline
+name = "python"
+description = "Safeguards Python projects, protects .pypirc credentials, and prevents untrusted package indices"
+
+mode = "balanced"
+fail_mode = "ask"
+
+trusted_domains = [
+    "pypi.org",
+    "files.pythonhosted.org",
+    "github.com",
+    "raw.githubusercontent.com"
+]
+
+allow_globs = [
+    ".venv/**",
+    "venv/**",
+    ".pytest_cache/**",
+    ".ruff_cache/**",
+    "__pycache__/**",
+    "dist/**",
+    "build/**",
+    "*.egg-info/**"
+]
+
+deny_globs = [
+    ".pypirc",
+    ".env"
+]
+
+allow_commands = [
+    "pytest",
+    "ruff check .",
+    "ruff format .",
+    "mypy",
+    "pip list",
+    "pip freeze",
+    "poetry run pytest"
+]
+
+deny_commands = []

@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Plain TOML presets in `src/agent_redline/presets/` for `laravel`, `node`, `python`, and `git` with curated allowlists, denylists, and trusted registries.
+- Content Prompt Injection Scanner (`src/agent_redline/injection.py`) using multi-signal heuristic scoring (instruction overrides, exfiltration directives, hidden HTML comments, zero-width obfuscation, and Unicode tag characters) to add visible safety warning banners into agent context.
 - Labeled evaluation corpus in `corpus/`: 184 malicious attack/destruction payloads (`corpus/malicious.jsonl`) and 151 benign realistic developer commands (`corpus/benign.jsonl`).
 - Empirical benchmark engine (`src/agent_redline/bench.py`) measuring Precision (100.00%), Recall (100.00%), False Positive Rate (0.00%), and per-call evaluation latency (mean 0.82ms, p95 1.23ms).
 - CLI command `redline bench` generating formatted terminal benchmark reports and enforcing automated CI quality gates.

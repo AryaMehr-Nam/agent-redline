@@ -1,0 +1,44 @@
+# Node.js / JavaScript security preset for agent-redline
+name = "node"
+description = "Safeguards Node.js projects, protects .npmrc tokens, and allows safe node_modules cleanups"
+
+mode = "balanced"
+fail_mode = "ask"
+
+trusted_domains = [
+    "npmjs.com",
+    "registry.npmjs.org",
+    "yarnpkg.com",
+    "github.com",
+    "raw.githubusercontent.com"
+]
+
+allow_globs = [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    ".next/**",
+    ".nuxt/**",
+    "coverage/**",
+    ".turbo/**"
+]
+
+deny_globs = [
+    ".npmrc",
+    ".env",
+    ".env.local"
+]
+
+allow_commands = [
+    "npm test",
+    "npm run build",
+    "npm run dev",
+    "npm run lint",
+    "pnpm test",
+    "yarn test",
+    "npx tsc --noEmit"
+]
+
+deny_commands = [
+    "npm publish --force"
+]
