@@ -30,3 +30,6 @@ htmlcov/
 # Project local artifacts
 .redline/
 *.bak
+
+# Agent Skills install lock
+skills-lock.json
