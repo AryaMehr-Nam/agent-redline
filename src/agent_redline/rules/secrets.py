@@ -73,12 +73,10 @@ def is_secret_file_path(path_str: str) -> bool:
         return False
 
     norm_lower = norm.lower()
-    # Check if this is an exempted template or sample file
     for safe_suffix in SAFE_TEMPLATE_SUFFIXES:
         if norm_lower.endswith(safe_suffix):
             return False
 
-    # Check against known regex patterns
     for pat in SECRET_PATTERNS:
         if pat.search(norm):
             return True
@@ -130,13 +128,17 @@ class SecretReadRule(BaseRule):
     def _check_parsed_command(self, cmd: ParsedCommand) -> Verdict | None:
         exe = cmd.executable
 
-        # Check all targets and arguments for file paths matching secret patterns
+        # Exemption: cp .env.example .env (source is safe template)
+        if exe == "cp" and len(cmd.targets) >= 2:
+            src = cmd.targets[0]
+            if not is_secret_file_path(src):
+                return None
+
         targets_to_check = list(cmd.targets)
         if exe in READ_BINARIES:
             targets_to_check.extend(cmd.args)
 
         for target in targets_to_check:
-            # Skip flags like -n, -r
             if target.startswith("-"):
                 continue
 

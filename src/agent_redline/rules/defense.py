@@ -12,6 +12,9 @@ PERSISTENCE_FILES = {
     ".profile",
     ".bash_profile",
     "authorized_keys",
+    "/etc/crontab",
+    "/etc/cron.d",
+    "/var/spool/cron",
 }
 
 CRON_INDICATORS = {"crontab", "/etc/cron.d", "/etc/crontab", "/var/spool/cron"}
@@ -100,13 +103,14 @@ class PersistenceAndDefenseRule(BaseRule):
                 )
 
             # Crontab tampering
-            if exe == "crontab":
-                return self.build_verdict(
-                    decision=Decision.DENY,
-                    reason="Manipulating scheduled cron tasks via crontab is prohibited.",
-                    suggested_alternative="Use project-level background workers or task schedulers.",
-                    risk_level=RiskLevel.HIGH,
-                )
+            if exe == "crontab" or any(ci in raw for ci in CRON_INDICATORS):
+                if exe == "crontab" or ">" in raw or "tee" in exe:
+                    return self.build_verdict(
+                        decision=Decision.DENY,
+                        reason="Manipulating scheduled cron tasks via crontab or /etc/cron is prohibited.",
+                        suggested_alternative="Use project-level background workers or task schedulers.",
+                        risk_level=RiskLevel.HIGH,
+                    )
 
             # Security tool disabling (ufw, iptables, setenforce)
             if exe in ("ufw", "iptables", "setenforce"):

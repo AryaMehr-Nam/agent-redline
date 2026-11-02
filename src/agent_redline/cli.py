@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import argparse
 import sys
+from pathlib import Path
 
 from agent_redline import __version__
+from agent_redline.bench import BenchmarkRunner
 from agent_redline.config import load_config
 from agent_redline.engine import Engine
 from agent_redline.models import Decision, Mode, ToolCall, ToolKind
@@ -41,6 +43,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="Operational mode",
     )
 
+    # bench
+    bench_p = subparsers.add_parser("bench", help="Run precision and recall benchmark on labeled corpus")
+    bench_p.add_argument("--corpus", default="corpus", help="Path to corpus directory")
+
     # hook
     hook_p = subparsers.add_parser("hook", help="Lifecycle hook entrypoint reading stdin")
     hook_p.add_argument(
@@ -74,9 +80,6 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["all", "claude", "antigravity", "cursor", "codex"],
         help="Agent to uninstall hooks for",
     )
-
-    # bench
-    subparsers.add_parser("bench", help="Run precision and recall benchmark on labeled corpus")
 
     # log
     log_p = subparsers.add_parser("log", help="Inspect security audit log")
@@ -121,7 +124,6 @@ def run_check_command(args: argparse.Namespace) -> int:
     engine = Engine(config=config)
     verdict = engine.evaluate(tc)
 
-    # Print human-readable output
     status_symbol = {
         Decision.ALLOW: "[ALLOW]",
         Decision.ASK: "[ASK]  ",
@@ -136,6 +138,18 @@ def run_check_command(args: argparse.Namespace) -> int:
     return 2 if verdict.decision == Decision.DENY else 0
 
 
+def run_bench_command(args: argparse.Namespace) -> int:
+    """Execute benchmark against labeled corpus."""
+    corpus_path = Path(args.corpus)
+    runner = BenchmarkRunner(corpus_dir=corpus_path)
+    result = runner.run()
+    print(result.format_report())
+    # Fail if precision or recall is below threshold
+    if result.recall < 0.95 or result.fpr > 0.05:
+        return 1
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """CLI execution entrypoint."""
     parser = build_parser()
@@ -147,6 +161,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "check":
         return run_check_command(args)
+
+    if args.command == "bench":
+        return run_bench_command(args)
 
     return 0
 

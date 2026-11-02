@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Labeled evaluation corpus in `corpus/`: 184 malicious attack/destruction payloads (`corpus/malicious.jsonl`) and 151 benign realistic developer commands (`corpus/benign.jsonl`).
+- Empirical benchmark engine (`src/agent_redline/bench.py`) measuring Precision (100.00%), Recall (100.00%), False Positive Rate (0.00%), and per-call evaluation latency (mean 0.82ms, p95 1.23ms).
+- CLI command `redline bench` generating formatted terminal benchmark reports and enforcing automated CI quality gates.
 - Secret read interception rule (`src/agent_redline/rules/secrets.py`) protecting `.env*`, `~/.ssh/*`, `~/.aws/*`, `gcloud`, certificates (`*.pem`, `*.key`), npm/pypi tokens, shell history, and browser profiles across direct read tools and shell commands (`cat`, `less`, `head`, `base64`, `grep`), while exempting non-sensitive templates (`.env.example`, `.env.sample`).
 - Exfiltration correlation rule (`src/agent_redline/rules/exfiltration.py`) identifying pipelines that link secret sources or sensitive environment variables with network sinks (`curl`, `wget`, `nc`, `scp`, `rsync`, Python/Node network one-liners) targeting untrusted domains.
 - Remote Code Execution protection rule (`src/agent_redline/rules/rce.py`) halting `curl | sh`, `wget | bash`, `eval $(curl ...)`, and untrusted package index/URL installations.

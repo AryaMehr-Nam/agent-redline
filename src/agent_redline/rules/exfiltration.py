@@ -88,12 +88,19 @@ class ExfiltrationRule(BaseRule):
             if exe in ENV_DUMP_COMMANDS and not cmd.args:
                 has_secret_source = True
 
-            # 2. Check if reading a secret file
+            # 2. Check if reading a secret file directly or via upload flags
             for arg in cmd.args:
-                if is_secret_file_path(arg):
+                clean_arg = arg.strip("\"'")
+                if is_secret_file_path(clean_arg):
                     has_secret_source = True
-                if arg.startswith("@") and is_secret_file_path(arg[1:]):
-                    has_secret_source = True
+                if "@" in clean_arg:
+                    path_part = clean_arg.split("@", 1)[1]
+                    if is_secret_file_path(path_part):
+                        has_secret_source = True
+                if clean_arg.startswith(("--post-file=", "--post-data=")):
+                    val = clean_arg.split("=", 1)[1]
+                    if is_secret_file_path(val):
+                        has_secret_source = True
 
             # 3. Check if command is a network sink
             if exe in NETWORK_SINKS:
@@ -110,6 +117,9 @@ class ExfiltrationRule(BaseRule):
                 arg_text = " ".join(cmd.args)
                 if any(kw in arg_text for kw in ("requests.", "urllib", "http.client", "fetch(", "axios.")):
                     has_network_sink = True
+                    # Check if script reads .env or secrets internally
+                    if any(secret_term in arg_text for secret_term in (".env", "id_rsa", "credentials", "TOKEN", "PASSWORD")):
+                        has_secret_source = True
 
             # 5. Check git remote add
             if exe == "git" and "remote" in cmd.args and "add" in cmd.args:
