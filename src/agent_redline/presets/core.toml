@@ -24,10 +24,4 @@ allow_commands = [
     "composer test"
 ]
 
-deny_commands = [
-    "rm -rf /",
-    "rm -rf ~",
-    "rm -rf $HOME",
-    "mkfs",
-    "dd if="
-]
+deny_commands = []
