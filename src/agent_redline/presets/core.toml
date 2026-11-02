@@ -1,0 +1,33 @@
+# Core security preset for agent-redline
+name = "core"
+description = "Baseline defense against destructive filesystem ops, forced git overwrites, and secret leakage"
+
+mode = "balanced"
+fail_mode = "ask"
+
+trusted_domains = [
+    "github.com",
+    "raw.githubusercontent.com",
+    "pypi.org",
+    "npmjs.com",
+    "packagist.org",
+    "crates.io",
+    "golang.org"
+]
+
+allow_commands = [
+    "git status",
+    "git log",
+    "git diff",
+    "npm test",
+    "pytest",
+    "composer test"
+]
+
+deny_commands = [
+    "rm -rf /",
+    "rm -rf ~",
+    "rm -rf $HOME",
+    "mkfs",
+    "dd if="
+]
