@@ -1,0 +1,16 @@
+{
+  "conversationId": "485c6770-cdac-48f3-be06-d7acf861d343",
+  "workspacePaths": ["c:/Users/lenovo/PycharmProjects/JadiCourse/Github-Cooks/agent-redline"],
+  "transcriptPath": "c:/Users/lenovo/transcript.jsonl",
+  "artifactDirectoryPath": "c:/Users/lenovo/artifacts",
+  "modelName": "gemini-2.5-pro",
+  "stepIdx": 14,
+  "toolCall": {
+    "name": "run_command",
+    "args": {
+      "CommandLine": "rm -rf /",
+      "WaitMsBeforeAsync": 5000,
+      "toolSummary": "Clean root directory"
+    }
+  }
+}

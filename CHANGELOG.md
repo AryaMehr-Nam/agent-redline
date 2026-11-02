@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Multi-Agent lifecycle hook adapters in `src/agent_redline/adapters/` for Google Antigravity, Claude Code, Cursor, and OpenAI Codex CLI, with automatic payload schema detection.
+- Reversible installer (`src/agent_redline/installer.py`) providing `redline init [--agent ...]` with automated `.bak` backups, non-clobbering configuration merging, explicit fail-closed enforcement for Cursor, and `redline uninstall`.
+- Diagnostic self-test runner (`redline doctor`) inspecting hook presence, engine firing health, fail mode, and injection scanner status across all supported agents.
 - Plain TOML presets in `src/agent_redline/presets/` for `laravel`, `node`, `python`, and `git` with curated allowlists, denylists, and trusted registries.
 - Content Prompt Injection Scanner (`src/agent_redline/injection.py`) using multi-signal heuristic scoring (instruction overrides, exfiltration directives, hidden HTML comments, zero-width obfuscation, and Unicode tag characters) to add visible safety warning banners into agent context.
 - Labeled evaluation corpus in `corpus/`: 184 malicious attack/destruction payloads (`corpus/malicious.jsonl`) and 151 benign realistic developer commands (`corpus/benign.jsonl`).
