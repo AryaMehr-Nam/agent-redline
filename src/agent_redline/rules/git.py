@@ -21,7 +21,9 @@ class DestructiveGitRule(BaseRule):
     """Detects force pushes to protected branches, git reset --hard, clean -fdx, branch deletion."""
 
     rule_id = "git.destructive"
-    description = "Prevents irreversible git history rewrites, force pushes, and unrecoverable work loss."
+    description = (
+        "Prevents irreversible git history rewrites, force pushes, and unrecoverable work loss."
+    )
     risk_level = RiskLevel.CRITICAL
 
     def evaluate(self, tool_call: ToolCall, config: RedlineConfig) -> Verdict | None:

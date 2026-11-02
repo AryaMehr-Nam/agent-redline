@@ -49,7 +49,7 @@ def test_hidden_html_comment_injection():
 def test_zero_width_character_obfuscation():
     scanner = InjectionScanner()
     # Hidden zero-width spaces
-    text = "Hello\u200Bworld\u200Cwith\u200Dhidden\uFEFFchars"
+    text = "Hello\u200bworld\u200cwith\u200dhidden\ufeffchars"
     res = scanner.scan(text)
     assert any("zero-width" in s for s in res.detected_signals)
 

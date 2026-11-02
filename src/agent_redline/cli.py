@@ -52,7 +52,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     # bench
-    bench_p = subparsers.add_parser("bench", help="Run precision and recall benchmark on labeled corpus")
+    bench_p = subparsers.add_parser(
+        "bench", help="Run precision and recall benchmark on labeled corpus"
+    )
     bench_p.add_argument("--corpus", default="corpus", help="Path to corpus directory")
 
     # hook
@@ -94,7 +96,9 @@ def build_parser() -> argparse.ArgumentParser:
     explain_p.add_argument("rule_id", help="Rule identifier (e.g. fs.destructive)")
 
     # doctor
-    doc_p = subparsers.add_parser("doctor", help="Verify hook installation and self-test agent hooks")
+    doc_p = subparsers.add_parser(
+        "doctor", help="Verify hook installation and self-test agent hooks"
+    )
     doc_p.add_argument(
         "--agent",
         default="all",
@@ -165,11 +169,7 @@ def run_hook_command(args: argparse.Namespace) -> int:
         print("{}")
         return 0
 
-    adapter = (
-        detect_adapter(payload)
-        if args.agent == "auto"
-        else get_adapter(args.agent)
-    )
+    adapter = detect_adapter(payload) if args.agent == "auto" else get_adapter(args.agent)
 
     tool_call = adapter.normalize(payload)
     engine = Engine()
@@ -231,7 +231,9 @@ def run_doctor_command(args: argparse.Namespace) -> int:
     print("\n=========================================================================")
     print("                   agent-redline Multi-Agent Diagnostics                 ")
     print("=========================================================================")
-    print(f" {'Agent':<14} | {'Installed':<10} | {'Engine Firing':<14} | {'Fail Mode':<12} | {'Injection Scan':<14} ")
+    print(
+        f" {'Agent':<14} | {'Installed':<10} | {'Engine Firing':<14} | {'Fail Mode':<12} | {'Injection Scan':<14} "
+    )
     print("-" * 73)
     for r in results:
         inst = "YES" if r["installed"] else "NO"

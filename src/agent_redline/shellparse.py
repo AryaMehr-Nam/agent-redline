@@ -167,7 +167,9 @@ def split_pipeline_segments(command_line: str) -> list[tuple[str, str | None]]:
 
 def extract_base64_payload(text: str) -> str | None:
     """Detect and decode potential base64 payloads piped into sh/bash."""
-    match = re.search(r"echo\s+['\"]?([A-Za-z0-9+/=]{4,})['\"]?\s*\|\s*base64\s+-(?:d|-decode)", text)
+    match = re.search(
+        r"echo\s+['\"]?([A-Za-z0-9+/=]{4,})['\"]?\s*\|\s*base64\s+-(?:d|-decode)", text
+    )
     if match:
         b64_str = match.group(1)
         try:

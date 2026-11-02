@@ -20,8 +20,6 @@ class BaseAdapter(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def encode(
-        self, verdict: Verdict
-    ) -> tuple[int, dict[str, Any] | None, str | None]:
+    def encode(self, verdict: Verdict) -> tuple[int, dict[str, Any] | None, str | None]:
         """Encode Verdict into (exit_code, stdout_dict, stderr_str)."""
         raise NotImplementedError

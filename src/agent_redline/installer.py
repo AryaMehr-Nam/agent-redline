@@ -49,15 +49,15 @@ def install_antigravity(project_dir: Path) -> str:
 
     hook_entry = {
         "PreToolUse": [
-          {
-            "matcher": "run_command|read_file|view_file|write_file|edit_file",
-            "hooks": [
-              {
-                "type": "command",
-                "command": f"{HOOK_COMMAND_BASE} --agent antigravity",
-              }
-            ],
-          }
+            {
+                "matcher": "run_command|read_file|view_file|write_file|edit_file",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": f"{HOOK_COMMAND_BASE} --agent antigravity",
+                    }
+                ],
+            }
         ]
     }
     data["redline-safety-gate"] = hook_entry
@@ -83,19 +83,22 @@ def install_claude(project_dir: Path) -> str:
     pre_tool_list = hooks.setdefault("PreToolUse", [])
 
     pre_tool_list = [
-        item for item in pre_tool_list
+        item
+        for item in pre_tool_list
         if not any("agent_redline" in h.get("command", "") for h in item.get("hooks", []))
     ]
 
-    pre_tool_list.append({
-        "matcher": "Bash|FileRead|View|FileEdit|Write",
-        "hooks": [
-            {
-                "type": "command",
-                "command": f"{HOOK_COMMAND_BASE} --agent claude",
-            }
-        ],
-    })
+    pre_tool_list.append(
+        {
+            "matcher": "Bash|FileRead|View|FileEdit|Write",
+            "hooks": [
+                {
+                    "type": "command",
+                    "command": f"{HOOK_COMMAND_BASE} --agent claude",
+                }
+            ],
+        }
+    )
     hooks["PreToolUse"] = pre_tool_list
     settings_file.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     return str(settings_file)
@@ -120,10 +123,12 @@ def install_cursor(project_dir: Path) -> str:
 
     shell_hooks = [h for h in shell_hooks if "agent_redline" not in h.get("command", "")]
 
-    shell_hooks.append({
-        "command": f"{HOOK_COMMAND_BASE} --agent cursor",
-        "failClosed": True,
-    })
+    shell_hooks.append(
+        {
+            "command": f"{HOOK_COMMAND_BASE} --agent cursor",
+            "failClosed": True,
+        }
+    )
     hooks_dict["beforeShellExecution"] = shell_hooks
     hooks_file.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     return str(hooks_file)
@@ -147,25 +152,30 @@ def install_codex(project_dir: Path) -> str:
     pre_tool_list = hooks.setdefault("PreToolUse", [])
 
     pre_tool_list = [
-        item for item in pre_tool_list
+        item
+        for item in pre_tool_list
         if not any("agent_redline" in h.get("command", "") for h in item.get("hooks", []))
     ]
 
-    pre_tool_list.append({
-        "matcher": "Bash|apply_patch|Write",
-        "hooks": [
-            {
-                "type": "command",
-                "command": f"{HOOK_COMMAND_BASE} --agent codex",
-            }
-        ],
-    })
+    pre_tool_list.append(
+        {
+            "matcher": "Bash|apply_patch|Write",
+            "hooks": [
+                {
+                    "type": "command",
+                    "command": f"{HOOK_COMMAND_BASE} --agent codex",
+                }
+            ],
+        }
+    )
     hooks["PreToolUse"] = pre_tool_list
     hooks_file.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     return str(hooks_file)
 
 
-def create_initial_guard_toml(project_dir: Path, preset: str = "core", mode: str = "balanced") -> Path:
+def create_initial_guard_toml(
+    project_dir: Path, preset: str = "core", mode: str = "balanced"
+) -> Path:
     """Create a guard.toml in the project root if one does not already exist."""
     guard_path = project_dir / "guard.toml"
     if not guard_path.exists():
@@ -236,7 +246,14 @@ def uninstall_agent_hooks(project_dir: Path, agent_target: str = "all") -> list[
                         data.pop("redline-safety-gate", None)
                     elif name in ("claude", "codex"):
                         hooks = data.get("hooks", {}).get("PreToolUse", [])
-                        hooks = [h for h in hooks if not any("agent_redline" in sub.get("command", "") for sub in h.get("hooks", []))]
+                        hooks = [
+                            h
+                            for h in hooks
+                            if not any(
+                                "agent_redline" in sub.get("command", "")
+                                for sub in h.get("hooks", [])
+                            )
+                        ]
                         data.setdefault("hooks", {})["PreToolUse"] = hooks
                     elif name == "cursor":
                         hooks = data.get("hooks", {}).get("beforeShellExecution", [])
@@ -286,13 +303,15 @@ def doctor_diagnostic(project_dir: Path) -> list[dict[str, Any]]:
             except Exception:
                 pass
 
-        results.append({
-            "agent": name,
-            "installed": installed,
-            "path": str(path),
-            "fail_mode": fail_mode if installed else "n/a",
-            "engine_firing": engine_healthy,
-            "post_tool_injection_scanner": "supported" if post_tool else "via SKILL.md",
-        })
+        results.append(
+            {
+                "agent": name,
+                "installed": installed,
+                "path": str(path),
+                "fail_mode": fail_mode if installed else "n/a",
+                "engine_firing": engine_healthy,
+                "post_tool_injection_scanner": "supported" if post_tool else "via SKILL.md",
+            }
+        )
 
     return results

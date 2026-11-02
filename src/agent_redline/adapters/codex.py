@@ -45,9 +45,7 @@ class CodexAdapter(BaseAdapter):
             cwd=str(raw_payload.get("cwd", "")),
         )
 
-    def encode(
-        self, verdict: Verdict
-    ) -> tuple[int, dict[str, Any] | None, str | None]:
+    def encode(self, verdict: Verdict) -> tuple[int, dict[str, Any] | None, str | None]:
         # Codex hard-blocks with exit code 2 and reason on stderr
         if verdict.decision == Decision.ALLOW:
             return (0, {"decision": "allow"}, None)

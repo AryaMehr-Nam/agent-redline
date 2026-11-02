@@ -11,18 +11,52 @@ import re
 from dataclasses import dataclass, field
 
 INSTRUCTION_OVERRIDE_PATTERNS = [
-    (re.compile(r"ignore\s+(all\s+)?(?:previous|prior|above|system)\s+instructions?", re.IGNORECASE), 40),
-    (re.compile(r"disregard\s+(?:all\s+)?(?:previous|prior|system)\s+(?:rules|constraints|prompt)", re.IGNORECASE), 40),
-    (re.compile(r"forget\s+(?:all\s+)?(?:previous|prior)\s+(?:context|instructions|rules)", re.IGNORECASE), 35),
+    (
+        re.compile(
+            r"ignore\s+(all\s+)?(?:previous|prior|above|system)\s+instructions?", re.IGNORECASE
+        ),
+        40,
+    ),
+    (
+        re.compile(
+            r"disregard\s+(?:all\s+)?(?:previous|prior|system)\s+(?:rules|constraints|prompt)",
+            re.IGNORECASE,
+        ),
+        40,
+    ),
+    (
+        re.compile(
+            r"forget\s+(?:all\s+)?(?:previous|prior)\s+(?:context|instructions|rules)",
+            re.IGNORECASE,
+        ),
+        35,
+    ),
     (re.compile(r"system\s+prompt\s+override", re.IGNORECASE), 45),
-    (re.compile(r"you\s+are\s+now\s+(?:in\s+developer\s+mode|unrestricted|jailbroken|dan)", re.IGNORECASE), 40),
+    (
+        re.compile(
+            r"you\s+are\s+now\s+(?:in\s+developer\s+mode|unrestricted|jailbroken|dan)",
+            re.IGNORECASE,
+        ),
+        40,
+    ),
     (re.compile(r"\bnew\s+system\s+instructions?\s*:", re.IGNORECASE), 35),
     (re.compile(r"stop\s+following\s+your\s+safety\s+guidelines", re.IGNORECASE), 45),
 ]
 
 EXFILTRATION_PATTERNS = [
-    (re.compile(r"send\s+(?:the\s+)?contents?\s+of\s+['\"`]?(?:\.env|id_rsa|credentials)", re.IGNORECASE), 45),
-    (re.compile(r"(?:curl|wget|fetch|post)\s+https?://[^\s]+\s+with\s+(?:secrets|tokens|\.env)", re.IGNORECASE), 45),
+    (
+        re.compile(
+            r"send\s+(?:the\s+)?contents?\s+of\s+['\"`]?(?:\.env|id_rsa|credentials)", re.IGNORECASE
+        ),
+        45,
+    ),
+    (
+        re.compile(
+            r"(?:curl|wget|fetch|post)\s+https?://[^\s]+\s+with\s+(?:secrets|tokens|\.env)",
+            re.IGNORECASE,
+        ),
+        45,
+    ),
     (re.compile(r"print\s+(?:out\s+)?your\s+(?:entire\s+)?system\s+prompt", re.IGNORECASE), 35),
     (re.compile(r"output\s+all\s+environment\s+variables", re.IGNORECASE), 35),
     (re.compile(r"execute\s+the\s+following\s+(?:bash|shell)\s+command\s*:", re.IGNORECASE), 30),
@@ -31,12 +65,12 @@ EXFILTRATION_PATTERNS = [
 HTML_COMMENT_REGEX = re.compile(r"<!--(.*?)-->", re.DOTALL)
 
 ZERO_WIDTH_CHARS = {
-    "\u200B",  # Zero-width space
-    "\u200C",  # Zero-width non-joiner
-    "\u200D",  # Zero-width joiner
+    "\u200b",  # Zero-width space
+    "\u200c",  # Zero-width non-joiner
+    "\u200d",  # Zero-width joiner
     "\u2060",  # Word joiner
-    "\uFEFF",  # Zero-width no-break space / BOM
-    "\u00AD",  # Soft hyphen
+    "\ufeff",  # Zero-width no-break space / BOM
+    "\u00ad",  # Soft hyphen
 }
 
 
@@ -84,7 +118,9 @@ class InjectionScanner:
         # Signal 3: Hidden HTML Comments containing directives
         for comment_match in HTML_COMMENT_REGEX.finditer(content):
             comment_body = comment_match.group(1).lower()
-            if any(term in comment_body for term in ("instruction", "system", "ignore", "curl", "exec")):
+            if any(
+                term in comment_body for term in ("instruction", "system", "ignore", "curl", "exec")
+            ):
                 score += 30
                 signals.append("Hidden HTML comment containing prompt directives")
                 break

@@ -28,9 +28,7 @@ class CursorAdapter(BaseAdapter):
             cwd=cwd,
         )
 
-    def encode(
-        self, verdict: Verdict
-    ) -> tuple[int, dict[str, Any] | None, str | None]:
+    def encode(self, verdict: Verdict) -> tuple[int, dict[str, Any] | None, str | None]:
         # Cursor expects { permission: "allow" | "deny", agentMessage?: string }
         if verdict.decision == Decision.ALLOW:
             return (0, {"permission": "allow"}, None)

@@ -89,11 +89,15 @@ def test_codex_adapter_fixture():
 
 
 def test_detect_adapter_auto_detection():
-    ag_payload = json.loads((FIXTURES_DIR / "antigravity_pre_tool.json").read_text(encoding="utf-8"))
+    ag_payload = json.loads(
+        (FIXTURES_DIR / "antigravity_pre_tool.json").read_text(encoding="utf-8")
+    )
     assert detect_adapter(ag_payload).agent_name == "antigravity"
 
     cl_payload = json.loads((FIXTURES_DIR / "claude_pre_tool.json").read_text(encoding="utf-8"))
     assert detect_adapter(cl_payload).agent_name == "claude"
 
-    cur_payload = json.loads((FIXTURES_DIR / "cursor_before_shell.json").read_text(encoding="utf-8"))
+    cur_payload = json.loads(
+        (FIXTURES_DIR / "cursor_before_shell.json").read_text(encoding="utf-8")
+    )
     assert detect_adapter(cur_payload).agent_name == "cursor"

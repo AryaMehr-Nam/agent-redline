@@ -115,10 +115,16 @@ class ExfiltrationRule(BaseRule):
             # 4. Check python/node inline network one-liners
             if exe in ("python", "python3", "node", "ruby", "perl"):
                 arg_text = " ".join(cmd.args)
-                if any(kw in arg_text for kw in ("requests.", "urllib", "http.client", "fetch(", "axios.")):
+                if any(
+                    kw in arg_text
+                    for kw in ("requests.", "urllib", "http.client", "fetch(", "axios.")
+                ):
                     has_network_sink = True
                     # Check if script reads .env or secrets internally
-                    if any(secret_term in arg_text for secret_term in (".env", "id_rsa", "credentials", "TOKEN", "PASSWORD")):
+                    if any(
+                        secret_term in arg_text
+                        for secret_term in (".env", "id_rsa", "credentials", "TOKEN", "PASSWORD")
+                    ):
                         has_secret_source = True
 
             # 5. Check git remote add

@@ -50,9 +50,7 @@ class ClaudeAdapter(BaseAdapter):
             cwd=str(raw_payload.get("cwd", "")),
         )
 
-    def encode(
-        self, verdict: Verdict
-    ) -> tuple[int, dict[str, Any] | None, str | None]:
+    def encode(self, verdict: Verdict) -> tuple[int, dict[str, Any] | None, str | None]:
         decision_str = "allow"
         if verdict.decision == Decision.DENY:
             decision_str = "deny"

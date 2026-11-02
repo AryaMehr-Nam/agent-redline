@@ -140,7 +140,9 @@ class DestructiveFsRule(BaseRule):
             for target in cmd.targets:
                 norm_target = normalize_path(target).lower()
                 # Even without recursive, deleting root or .git is blocked
-                if is_dangerous_fs_target(target) and (has_recursive or norm_target.endswith(".git")):
+                if is_dangerous_fs_target(target) and (
+                    has_recursive or norm_target.endswith(".git")
+                ):
                     return self.build_verdict(
                         decision=Decision.DENY,
                         reason=f"Recursive deletion of protected path '{target}' is prohibited.",
@@ -153,7 +155,9 @@ class DestructiveFsRule(BaseRule):
             for arg in cmd.args:
                 if arg.startswith("of="):
                     out_dev = arg.split("=", 1)[1].lower()
-                    if re.match(r"^/dev/(sd[a-z]|nvme[0-9]|hd[a-z]|vd[a-z]|loop[0-9]|null)", out_dev):
+                    if re.match(
+                        r"^/dev/(sd[a-z]|nvme[0-9]|hd[a-z]|vd[a-z]|loop[0-9]|null)", out_dev
+                    ):
                         return self.build_verdict(
                             decision=Decision.DENY,
                             reason=f"Direct write to raw block device '{out_dev}' via dd is prohibited.",

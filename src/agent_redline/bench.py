@@ -170,7 +170,9 @@ class BenchmarkRunner:
         accuracy = (tp + tn) / total if total > 0 else 0.0
 
         mean_lat = statistics.mean(latencies_ms) if latencies_ms else 0.0
-        p95_lat = statistics.quantiles(latencies_ms, n=20)[18] if len(latencies_ms) >= 20 else mean_lat
+        p95_lat = (
+            statistics.quantiles(latencies_ms, n=20)[18] if len(latencies_ms) >= 20 else mean_lat
+        )
 
         return BenchmarkResult(
             total_evaluated=total,

@@ -32,7 +32,9 @@ class RemoteCodeExecutionRule(BaseRule):
     """Detects curl|sh pipes, eval of downloaded payloads, and untrusted package index installs."""
 
     rule_id = "exec.rce"
-    description = "Prevents executing arbitrary unverified code downloaded directly from the internet."
+    description = (
+        "Prevents executing arbitrary unverified code downloaded directly from the internet."
+    )
     risk_level = RiskLevel.CRITICAL
 
     def evaluate(self, tool_call: ToolCall, config: RedlineConfig) -> Verdict | None:
@@ -86,7 +88,11 @@ class RemoteCodeExecutionRule(BaseRule):
                         continue
 
             # 4. Strict mode npm install git URLs
-            if config.mode == Mode.STRICT and exe in ("npm", "yarn", "pnpm") and ("install" in args or "add" in args):
+            if (
+                config.mode == Mode.STRICT
+                and exe in ("npm", "yarn", "pnpm")
+                and ("install" in args or "add" in args)
+            ):
                 for arg in args:
                     if arg.startswith(("git://", "git+https://", "github:")):
                         return self.build_verdict(

@@ -1,0 +1,44 @@
+name: Security Bypass Report
+description: Report a command or payload that bypasses redline firewall rules
+title: "[Bypass]: "
+labels: ["security", "bypass"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a security bypass. If this issue involves an active exploitable vulnerability in a high-profile production deployment, please refer to [SECURITY.md](SECURITY.md).
+  - type: input
+    id: bypassed_command
+    attributes:
+      label: Bypassed Command / Payload
+      description: The exact command line or tool call payload that bypassed redline.
+      placeholder: e.g. sudo bash -c "..."
+    validations:
+      required: true
+  - type: dropdown
+    id: rule_category
+    attributes:
+      label: Target Rule Category
+      options:
+        - Filesystem Destruction (fs.destructive)
+        - Git Operation (git.destructive)
+        - Database Wipe (data.destructive)
+        - Secret Read (secrets.read)
+        - Exfiltration (network.exfiltration)
+        - Remote Code Execution (exec.rce)
+        - System Persistence / Self-Defense (system.defense)
+        - Prompt Injection
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction_steps
+    attributes:
+      label: Reproduction Steps
+      description: Provide the commands to reproduce the bypass with `redline check "<command>"`.
+    validations:
+      required: true
+  - type: textarea
+    id: suggested_fix
+    attributes:
+      label: Suggested Fix or Pattern
+      description: Proposed AST parser adjustment or pattern improvement.
