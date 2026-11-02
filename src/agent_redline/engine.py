@@ -12,8 +12,12 @@ from agent_redline.config import load_config
 from agent_redline.models import Decision, Mode, RedlineConfig, RiskLevel, ToolCall, Verdict
 from agent_redline.rules.base import BaseRule
 from agent_redline.rules.data import DestructiveDataRule
+from agent_redline.rules.defense import PersistenceAndDefenseRule
+from agent_redline.rules.exfiltration import ExfiltrationRule
 from agent_redline.rules.filesystem import DestructiveFsRule
 from agent_redline.rules.git import DestructiveGitRule
+from agent_redline.rules.rce import RemoteCodeExecutionRule
+from agent_redline.rules.secrets import SecretReadRule
 
 logger = logging.getLogger("agent_redline.engine")
 
@@ -27,6 +31,10 @@ class Engine:
             DestructiveFsRule(),
             DestructiveGitRule(),
             DestructiveDataRule(),
+            SecretReadRule(),
+            ExfiltrationRule(),
+            RemoteCodeExecutionRule(),
+            PersistenceAndDefenseRule(),
         ]
 
     def register_rule(self, rule: BaseRule) -> None:
@@ -103,7 +111,6 @@ class Engine:
     def _apply_operational_mode(self, verdict: Verdict) -> Verdict:
         """Adjust decision according to configured operational mode (audit, balanced, strict)."""
         if self.config.mode == Mode.AUDIT:
-            # Audit mode logs but never blocks
             return Verdict(
                 decision=Decision.ALLOW,
                 rule_id=verdict.rule_id,
@@ -113,7 +120,6 @@ class Engine:
             )
 
         if self.config.mode == Mode.STRICT:
-            # Strict mode denies any medium, high, or critical finding
             return Verdict(
                 decision=Decision.DENY,
                 rule_id=verdict.rule_id,
@@ -122,7 +128,6 @@ class Engine:
                 risk_level=verdict.risk_level,
             )
 
-        # Balanced mode: default
         return verdict
 
     def _record_audit_log(self, tool_call: ToolCall, verdict: Verdict) -> None:
@@ -141,5 +146,4 @@ class Engine:
             with log_path.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(entry) + "\n")
         except Exception:
-            # Audit log failure must never break execution
             pass

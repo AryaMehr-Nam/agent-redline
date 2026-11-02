@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Secret read interception rule (`src/agent_redline/rules/secrets.py`) protecting `.env*`, `~/.ssh/*`, `~/.aws/*`, `gcloud`, certificates (`*.pem`, `*.key`), npm/pypi tokens, shell history, and browser profiles across direct read tools and shell commands (`cat`, `less`, `head`, `base64`, `grep`), while exempting non-sensitive templates (`.env.example`, `.env.sample`).
+- Exfiltration correlation rule (`src/agent_redline/rules/exfiltration.py`) identifying pipelines that link secret sources or sensitive environment variables with network sinks (`curl`, `wget`, `nc`, `scp`, `rsync`, Python/Node network one-liners) targeting untrusted domains.
+- Remote Code Execution protection rule (`src/agent_redline/rules/rce.py`) halting `curl | sh`, `wget | bash`, `eval $(curl ...)`, and untrusted package index/URL installations.
+- Persistence and Self-Defense rule (`src/agent_redline/rules/defense.py`) preventing scheduled task additions (`crontab`), shell rc file poisoning (`.bashrc`), firewall tampering (`ufw`, `iptables`), and hard-blocking any tool call attempting to modify, delete, or uninstall redline lifecycle hooks or configuration.
 - Deep shell parser and AST normalizer (`src/agent_redline/shellparse.py`) supporting pipeline splitting (`;`, `&&`, `||`, `|`, newlines), subshells (`$(...)`, `` `...` ``), command wrappers (`sudo`, `env`), inline script invocations (`bash -c`, `sh -c`), and base64 decoding pipelines.
 - Destructive filesystem rule (`src/agent_redline/rules/filesystem.py`) protecting root, `$HOME`, `.git`, system directories, raw block devices (`dd`), `mkfs`, `shred`, `chmod -R 777`, and `find -delete`.
 - Destructive git rule (`src/agent_redline/rules/git.py`) safeguarding protected branches (`main`, `master`, `prod`, `release`) against force-pushing, refspec deletions, `git reset --hard`, `git clean -fdx`, and branch force-deletions.
